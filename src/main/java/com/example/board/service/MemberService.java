@@ -1,10 +1,15 @@
 package com.example.board.service;
 
+import com.example.board.dto.MemberResponseDto;
 import com.example.board.dto.SignUpResponseDto;
 import com.example.board.entitiy.Member;
 import com.example.board.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor  // MemberRepository 생성자를 주입받기 위해 사용한다.
@@ -24,5 +29,18 @@ public class MemberService {  // 확장될 이유가 없다면 구현체 클래�
         Member savedMember = memberRepository.save(member);  // 저장한 member를 반환받을 수 있다.
 
         return new SignUpResponseDto(savedMember.getId(), savedMember.getUsername(), savedMember.getAge());
+    }
+
+    public MemberResponseDto findById(Long id) {
+
+        Optional<Member> optionalMember = memberRepository.findById(id);// JpaRepository에 이미 구현되어 있는 메서드이다..!
+
+        if (optionalMember.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id : " + id);  // NOT_FOUND로 할거면 게속 NOT_FOUND로 하고, 204를 사용할거면 계속 204 사용한다.
+        }
+
+        Member findMember = optionalMember.get();
+
+        return new MemberResponseDto(findMember.getUsername(), findMember.getAge());
     }
 }
