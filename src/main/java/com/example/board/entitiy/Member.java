@@ -1,8 +1,10 @@
 package com.example.board.entitiy;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
-@Entity
+@Getter
+@Entity  // @Entity Annotation이 붙어있는 클래스는 기본 생성자가 필요하다.
 @Table(name = "member")
 public class Member extends BaseEntity{
 
@@ -19,7 +21,15 @@ public class Member extends BaseEntity{
 
     private Integer age;  // 추가 조건이 없기 때문에 @Column을 생략해도 된다. null이 허용된다.
 
-    // 생성자
+    // 기본생성자
+    public Member() {}
+
+    // 생성자 -> id는 자동으로 생성되므로 추가하지 않아도 된다.
+    public Member(String username, String password, Integer age) {
+        this.username = username;
+        this.password = password;
+        this.age = age;
+    }
 
 
     // 기능
