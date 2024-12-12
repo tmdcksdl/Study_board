@@ -8,6 +8,8 @@ import com.example.board.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -30,5 +32,13 @@ public class BoardService {
         Board savedBoard = boardRepository.save(board);  // save에 이미 @Transactional이 포함되어 있기 때문에 따로 사용하지 않아도 된다.
 
         return new BoardResponseDto(savedBoard.getId(), savedBoard.getTitle(), savedBoard.getContents());
+    }
+
+    public List<BoardResponseDto> findAll() {
+
+         return boardRepository.findAll()
+                 .stream()
+                 .map(BoardResponseDto::toDo)
+                 .toList();
     }
 }
