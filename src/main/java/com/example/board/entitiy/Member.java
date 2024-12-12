@@ -31,6 +31,8 @@ public class Member extends BaseEntity{
         this.age = age;
     }
 
-
     // 기능
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

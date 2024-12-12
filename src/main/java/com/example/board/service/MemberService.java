@@ -7,6 +7,7 @@ import com.example.board.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -42,5 +43,17 @@ public class MemberService {  // 확장될 이유가 없다면 구현체 클래�
         Member findMember = optionalMember.get();
 
         return new MemberResponseDto(findMember.getUsername(), findMember.getAge());
+    }
+
+    @Transactional  // 해당 범위 내 메서드가 트랜잭션이 되도록 보장해준다.
+    public void updatePassword(Long id, String oldPassword, String newPassword) {
+
+        Member findMember = memberRepository.findByIdOrElseThrow(id);  // findByIdOrElseThrow를 사용하지 않으면 Optional 객체가 비어있는지 계속해서 확인해줘야 한다.
+
+        if (!findMember.getPassword().equals(oldPassword)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
+        findMember.updatePassword(newPassword);
     }
 }
